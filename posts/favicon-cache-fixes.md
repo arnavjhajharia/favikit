@@ -37,6 +37,6 @@ If `site.webmanifest` points at `/icon-192.png` but you only uploaded `android-c
 
 ## Generate the full set locally (no upload)
 
-[Favikit](https://arnavjhajharia.github.io/favikit/) builds a proper `.ico`, all PNG sizes, manifest, and a paste-ready `<head>` block in the browser — nothing sent to a server. Handy when you are iterating and cache-busting every deploy.
+[Favikit](https://arnavjhajharia.github.io/favikit/) builds a proper `.ico`, all PNG sizes, manifest, and a paste-ready `<head>` block in the browser — nothing sent to a server. Handy when you are iterating and cache-busting every deploy. Background packs for app store / OG art: [MESHGRAIN on Gumroad ($6)](https://bharatankh.gumroad.com/l/meshgrain).
 
 _Disclosure: AI-assisted build; MIT [repo](https://github.com/arnavjhajharia/favikit)._
