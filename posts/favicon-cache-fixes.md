@@ -19,7 +19,7 @@ Bump `v=` whenever the icon changes. Same for PNG favicons.
 
 Safari wants **apple-touch-icon** (180×180). Android/PWA wants **192** and **512** in the manifest. Windows still likes a real **multi-resolution `.ico`**. Missing sizes fall back to old cached files.
 
-Full checklist (sizes + how to force a favicon refresh): [Favicon sizes in 2026](https://arnavjhajharia.github.io/favikit/favicon-sizes/#force-favicon-refresh).
+Paste-ready `<link rel="icon">` block + sizes: [Adding a favicon to static HTML](https://arnavjhajharia.github.io/favikit/favicon-sizes/#adding-favicon-static-html). Cache busting: [#force-favicon-refresh](https://arnavjhajharia.github.io/favikit/favicon-sizes/#force-favicon-refresh).
 
 ## 3. Clear site data (for your own QA)
 
