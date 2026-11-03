@@ -35,6 +35,14 @@ MIT licensed. Contributions welcome.
 
 One-line for awesome lists / free-for.dev: **Client-side favicon & PWA icon generator — real `.ico`, manifest + HTML snippet, nothing uploaded.** Live: https://arnavjhajharia.github.io/favikit/ · Repo: https://github.com/arnavjhajharia/favikit
 
+## Ship Kit (free tools)
+| Tool | URL |
+|------|-----|
+| [AppShot](https://arnavjhajharia.github.io/appshot/) | Store screenshots |
+| [Favikit](https://arnavjhajharia.github.io/favikit/) | Favicons (this repo) |
+| [ogkit](https://arnavjhajharia.github.io/ogkit/) | OG / social cards |
+| [ShipCopy](https://arnavjhajharia.github.io/shipcopy/) | Changelog → launch copy |
+
 ## Guide
 
 [Favicon sizes in 2026: the only files you need](https://arnavjhajharia.github.io/favikit/favicon-sizes/) (plus 5 fixes when a favicon doesn't show).
