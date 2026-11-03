@@ -72,6 +72,12 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <li>Optionally also place <code>apple-touch-icon.png</code> at the site root so root probes succeed.</li>
 <li>Ignore or redirect legacy <code>*-precomposed.png</code> probes; they are not required in 2026 if the link tag is correct.</li>
 </ol>
+<h2 id="msapplication-tileimage">What is <code>msapplication-TileImage</code> for? (Windows pinned tiles)</h2>
+<p>Legacy Microsoft browsers (especially IE / old Edge) used <code>&lt;meta name="msapplication-TileImage" content="…"&gt;</code> for the large square tile when a site was pinned to the Windows Start screen. Modern Chromium Edge and current Windows mostly ignore it in favour of normal favicons and PWA manifest icons.</p>
+<p>If you still want coverage for old bookmarks or enterprise lockscreens, point the meta tag at a <b>270×270 PNG</b> (or reuse a 256/512 PNG — browsers downscale). Pair it with <code>msapplication-TileColor</code> for the tile background:</p>
+<pre>&lt;meta name="msapplication-TileColor" content="#0d0e14"&gt;
+&lt;meta name="msapplication-TileImage" content="/mstile-270.png"&gt;</pre>
+<p>For new sites in 2026, prioritise <code>favicon.ico</code>, <code>apple-touch-icon</code>, and manifest 192/512 icons first; add TileImage only if analytics still show IE/legacy Edge traffic.</p>
 <h2 id="pwa-manifest-icons">PWA / webmanifest icons (192 &amp; 512) — fix “Manifest does not contain a suitable icon”</h2>
 <p>Chrome’s Application panel warns <b>“Manifest does not contain a suitable icon”</b> or <b>“No supplied icon is at least 144px square”</b> when <code>site.webmanifest</code> lists missing files, wrong paths, or only tiny icons. For installability, include at least:</p>
 <ul>
