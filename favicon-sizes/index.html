@@ -1,9 +1,9 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Favicon sizes in 2026 + how to force a favicon refresh</title>
-<meta name="description" content="How to force a favicon refresh when the browser keeps the old icon, plus the only favicon files you need in 2026: favicon.ico (16/32/48), 180 apple-touch-icon, 192/512 PNGs, and three link tags.">
+<title>Favicon sizes in 2026 — files, link tags &amp; test checklist</title>
+<meta name="description" content="Favicon sizes in 2026: the four files and three link tags you need, plus a quick test checklist. When the tab icon won't update, use ?v= cache-busting (hard refresh often fails).">
 <link rel="canonical" href="https://arnavjhajharia.github.io/favikit/favicon-sizes/">
-<meta property="og:title" content="Favicon sizes in 2026 + how to force a favicon refresh"><meta property="og:description" content="How to force a favicon refresh (cache-bust with ?v=), why hard refresh fails, and the only favicon files you need in 2026.">
+<meta property="og:title" content="Favicon sizes in 2026 — files, link tags &amp; test checklist"><meta property="og:description" content="The four favicon files and three tags for 2026, plus a test checklist. Cache-bust with ?v= when the tab icon won't update.">
 <meta property="og:url" content="https://arnavjhajharia.github.io/favikit/favicon-sizes/"><meta property="og:type" content="article">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I force a favicon refresh?", "acceptedAnswer": {"@type": "Answer", "text": "Browsers cache favicons independently of a normal hard refresh. Append a version query string to every icon URL (for example /favicon.ico?v=20261103), redeploy, then check in a private window. Clearing site data also works for your own QA."}}, {"@type": "Question", "name": "What size should a favicon be?", "acceptedAnswer": {"@type": "Answer", "text": "Ship a favicon.ico containing 16, 32 and 48 px images, a 180 x 180 apple-touch-icon.png, and 192 and 512 px PNGs listed in a web manifest."}}, {"@type": "Question", "name": "Do I still need favicon.ico?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Browsers and many tools still request /favicon.ico automatically, and it's the most compatible format. Keep it alongside PNG or SVG icons."}}, {"@type": "Question", "name": "Why is my favicon not showing?", "acceptedAnswer": {"@type": "Answer", "text": "Usually it's the browser cache (test in a private window), a relative path (start the href with /), or a missing link tag on a site that isn't at the domain root."}}, {"@type": "Question", "name": "What favicon size does Google Search use?", "acceptedAnswer": {"@type": "Answer", "text": "Google asks for a square favicon whose size is a multiple of 48 px, for example 48 x 48 or 96 x 96, at a crawlable URL."}}]}</script>
 <style>
@@ -13,6 +13,8 @@ main{max-width:760px;margin:0 auto;padding:40px 22px 60px}a{color:var(--acc)}
 h1{font-size:34px;line-height:1.2;margin:0 0 10px}h2{font-size:24px;margin:38px 0 10px}h3{font-size:18px;margin:24px 0 4px}
 .lead{color:var(--muted);margin:0 0 26px}table{border-collapse:collapse;width:100%;margin:12px 0;font-size:15px}
 th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}th{background:#161826}
+.checklist{list-style:none;padding:0;margin:16px 0}.checklist li{margin:10px 0;padding-left:28px;position:relative}
+.checklist li::before{content:"☐";position:absolute;left:0;color:var(--acc);font-weight:700}
 code,pre{font-family:Menlo,Consolas,monospace;font-size:14px;background:#161826;border-radius:6px}code{padding:1px 5px}
 pre{padding:14px;overflow:auto;border:1px solid var(--line)}.cta{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:10px;margin:8px 0}
 .box{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#12131c;margin:22px 0}
@@ -20,15 +22,31 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 .verified{font-size:14px;color:var(--muted);margin:0 0 22px;padding:10px 14px;border-left:3px solid var(--acc);background:#12131c}
 </style></head><body><main>
 <p style="margin:0 0 18px;font-size:14px"><a href="https://arnavjhajharia.github.io/favikit/">&larr; Favikit</a></p>
-<h1>Favicon sizes in 2026: the only files you need</h1>
-<p class="lead">You don't need 20 icon sizes. Four files and three tags cover every modern browser, iOS, Android and Google Search.</p>
+<h1>Favicon sizes in 2026</h1>
+<p class="lead">Four files and three <code>&lt;link&gt;</code> tags cover browser tabs, iOS/Android home screens, and Google Search in 2026. Use the checklist below before you ship; if the tab still shows an old icon, jump to <a href="#force-favicon-refresh">force refresh</a>.</p>
 <p class="verified"><time datetime="2026-11-03">Last verified 3 November 2026</time> against <a href="https://developers.google.com/search/docs/appearance/favicon-in-search">Google Search favicon guidelines</a> and current Safari / Chrome behaviour. Step-by-step cache fixes: <a href="https://dev.to/bharat_ankh_920bf0864220a/favicon-not-updating-after-deploy-5-fixes-for-the-browsers-favicon-cache-34ip">DEV Community</a>.</p>
-<h2>The files</h2>
+<h2>Quick reference (2026)</h2>
 <table><tr><th>File</th><th>Size</th><th>Used by</th></tr>
 <tr><td><code>favicon.ico</code></td><td>16, 32 and 48 px inside one file</td><td>Browser tabs and bookmarks. Browsers still request <code>/favicon.ico</code> by default.</td></tr>
 <tr><td><code>apple-touch-icon.png</code></td><td>180 × 180</td><td>iPhone and iPad home screen. Use a solid background: iOS fills transparent areas with black.</td></tr>
 <tr><td><code>icon-192.png</code>, <code>icon-512.png</code></td><td>192 × 192, 512 × 512</td><td>Android home screen and "install app", listed in <code>site.webmanifest</code></td></tr>
 <tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr></table>
+<h3>Paste-ready link tags</h3>
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;</pre>
+<h2>Test your favicon before you ship</h2>
+<p>Run through this once per deploy (private window = no stale favicon cache):</p>
+<ul class="checklist">
+<li>Open your site in a <b>private/incognito</b> window — if the icon is wrong here, it is not "just your cache".</li>
+<li>Visit <code>/favicon.ico</code> directly in a tab; you should see the new icon (not an old file or 404).</li>
+<li>Confirm every icon <code>href</code> starts with <code>/</code> (root-relative), especially on nested routes.</li>
+<li>Check <code>site.webmanifest</code> lists <b>192</b> and <b>512</b> PNG paths that return HTTP 200.</li>
+<li>Add to iPhone home screen once: missing or tiny icons mean you need <code>apple-touch-icon</code> at <b>180×180</b> with a solid background.</li>
+<li>After any icon change, bump <code>?v=</code> on every icon URL and in the manifest — see <a href="#force-favicon-refresh">force refresh</a>.</li>
+</ul>
+<h2 id="guide-sections">Detailed fixes (by problem)</h2>
+<p style="font-size:15px;color:var(--muted);margin:0 0 24px">Jump to: <a href="#force-favicon-refresh">cache / force refresh</a> · <a href="#browser-tab-favicon">tab sizes</a> · <a href="#favicon-ico-root-requests">/favicon.ico requests</a> · <a href="#pwa-manifest-icons">PWA manifest icons</a> · <a href="#apple-touch-icon-size">apple-touch-icon</a></p>
 <h2 id="favicon-ico-root-requests">How to prevent <code>favicon.ico</code> requests?</h2>
 <p>You generally <b>should not</b> try to block them. Browsers, crawlers, and many tools still request <code>/favicon.ico</code> at the site root even when you declare PNG or SVG icons with <code>&lt;link rel="icon"&gt;</code>. Returning 404 only adds failed requests in DevTools.</p>
 <p>Practical fix: ship a real multi-size <code>favicon.ico</code> (16, 32, 48 px inside one file) at the root <b>and</b> declare modern icons explicitly:</p>
@@ -112,8 +130,6 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <p>Serve the JSON as <code>application/manifest+json</code> (or <code>.webmanifest</code>). Paths must resolve (leading <code>/</code>). After changing icons, bump <code>?v=</code> on the <code>src</code> URLs and re-test in a private window — the same cache rules as favicons apply. <a href="https://arnavjhajharia.github.io/favikit/">Favikit</a> exports 192/512 PNGs plus a starter manifest.</p>
 <div class="box"><b>Do it in your browser, free:</b> <a href="https://arnavjhajharia.github.io/favikit/">Favikit</a> builds a multi-size <code>.ico</code>, PNGs, manifest and paste-ready tags on-device — nothing uploaded.<br><a class="cta" href="https://arnavjhajharia.github.io/favikit/">Open Favikit &rarr;</a></div>
 <div class="box"><b>Optional backgrounds for store shots &amp; OG images:</b> <a href="https://bharatankh.gumroad.com/l/meshgrain">MESHGRAIN</a> ($6) · <a href="https://bharatankh.gumroad.com/l/grain">GRAIN</a> overlays ($3).</div>
-<h2>FAQ</h2><h3>How do I force a favicon refresh?</h3><p>Append a version query string to every icon URL (for example <code>/favicon.ico?v=20261103</code>), redeploy, then check in a private window. Hard refresh alone often fails because favicon cache is separate from page cache.</p><h3>What size should a favicon be?</h3><p>Ship a favicon.ico containing 16, 32 and 48 px images, a 180 x 180 apple-touch-icon.png, and 192 and 512 px PNGs listed in a web manifest.</p><h3>Do I still need favicon.ico?</h3><p>Yes. Browsers and many tools still request /favicon.ico automatically, and it&#x27;s the most compatible format. Keep it alongside PNG or SVG icons.</p><h3>Why is my favicon not showing?</h3><p>Usually it&#x27;s the browser cache (test in a private window), a relative path (start the href with /), or a missing link tag on a site that isn&#x27;t at the domain root.</p><h3>What favicon size does Google Search use?</h3><p>Google asks for a square favicon whose size is a multiple of 48 px, for example 48 x 48 or 96 x 96, at a crawlable URL.</p><h3>Does a favicon have to be 16×16 or 32×32?</h3><p>Ship a multi-size favicon.ico (16, 32, 48). There is no single required size; Google prefers multiples of 48 px.</p><h3>What size is apple-touch-icon?</h3><p>180 × 180 PNG with a solid background for modern iOS.</p>
-<h3>What icon sizes does a PWA manifest need?</h3><p>At least 192×192 and 512×512 PNG entries in <code>site.webmanifest</code>. Missing or tiny icons trigger Chrome’s “suitable icon” warning.</p>
 <p style="font-size:15px;color:var(--muted);margin:32px 0 0">Related guides: <a href="https://arnavjhajharia.github.io/appshot/screenshot-sizes/#6-5-inch-display">App Store screenshot sizes (6.5&quot; / 2026)</a> ·
 <a href="https://arnavjhajharia.github.io/ogkit/og-image-size/#og-image-size">OG image size 1200×630</a> ·
 <a href="https://arnavjhajharia.github.io/shipcopy/whats-new-from-changelog/">What&apos;s New from a changelog</a></p>
