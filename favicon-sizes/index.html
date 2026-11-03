@@ -30,7 +30,15 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <tr><td><code>favicon.ico</code></td><td>16, 32 and 48 px inside one file</td><td>Browser tabs and bookmarks. Browsers still request <code>/favicon.ico</code> by default.</td></tr>
 <tr><td><code>apple-touch-icon.png</code></td><td>180 × 180</td><td>iPhone and iPad home screen. Use a solid background: iOS fills transparent areas with black.</td></tr>
 <tr><td><code>icon-192.png</code>, <code>icon-512.png</code></td><td>192 × 192, 512 × 512</td><td>Android home screen and "install app", listed in <code>site.webmanifest</code></td></tr>
-<tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr></table>
+<tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr>
+<tr><td><code>favicon for Google Search</code></td><td>48 × 48 or 96 × 96 (square, multiple of 48)</td><td>SERP snippet icon — can be the 48 px layer inside <code>favicon.ico</code> or a dedicated PNG at a crawlable URL</td></tr></table>
+<h2>What you must ship vs optional (2026)</h2>
+<table><tr><th>Asset</th><th>Status</th><th>Skip if…</th></tr>
+<tr><td><code>favicon.ico</code> (16/32/48) + root <code>&lt;link rel="icon"&gt;</code></td><td><b>Required</b></td><td>Never — even SVG-only sites get <code>/favicon.ico</code> probes</td></tr>
+<tr><td><code>apple-touch-icon.png</code> 180×180</td><td><b>Required</b> for iOS users</td><td>Desktop-only internal tools with no mobile audience</td></tr>
+<tr><td>Manifest icons 192 + 512</td><td><b>Required</b> for installable PWA</td><td>Static marketing site with no “Add to Home Screen” goal</td></tr>
+<tr><td><code>icon.svg</code> + <code>type="image/svg+xml"</code></td><td>Optional</td><td>Nice for crisp tabs; keep ICO anyway for compatibility</td></tr>
+<tr><td><code>msapplication-TileImage</code></td><td>Optional</td><td>Legacy Windows Start tiles only — see <a href="#msapplication-tileimage">TileImage</a></td></tr></table>
 <h3>Paste-ready link tags</h3>
 <pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
