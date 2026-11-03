@@ -5,7 +5,7 @@
 <link rel="canonical" href="https://arnavjhajharia.github.io/favikit/favicon-sizes/">
 <meta property="og:title" content="Favicon sizes in 2026 — files, link tags &amp; test checklist"><meta property="og:description" content="The four favicon files and three tags for 2026, plus a test checklist. Cache-bust with ?v= when the tab icon won't update.">
 <meta property="og:url" content="https://arnavjhajharia.github.io/favikit/favicon-sizes/"><meta property="og:type" content="article">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I force a favicon refresh?", "acceptedAnswer": {"@type": "Answer", "text": "Browsers cache favicons independently of a normal hard refresh. Append a version query string to every icon URL (for example /favicon.ico?v=20261103), redeploy, then check in a private window. Clearing site data also works for your own QA."}}, {"@type": "Question", "name": "What size should a favicon be?", "acceptedAnswer": {"@type": "Answer", "text": "Ship a favicon.ico containing 16, 32 and 48 px images, a 180 x 180 apple-touch-icon.png, and 192 and 512 px PNGs listed in a web manifest."}}, {"@type": "Question", "name": "Do I still need favicon.ico?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Browsers and many tools still request /favicon.ico automatically, and it's the most compatible format. Keep it alongside PNG or SVG icons."}}, {"@type": "Question", "name": "Why is my favicon not showing?", "acceptedAnswer": {"@type": "Answer", "text": "Usually it's the browser cache (test in a private window), a relative path (start the href with /), or a missing link tag on a site that isn't at the domain root."}}, {"@type": "Question", "name": "What favicon size does Google Search use?", "acceptedAnswer": {"@type": "Answer", "text": "Google asks for a square favicon whose size is a multiple of 48 px, for example 48 x 48 or 96 x 96, at a crawlable URL."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I force a favicon refresh?", "acceptedAnswer": {"@type": "Answer", "text": "Browsers cache favicons independently of a normal hard refresh. Append a version query string to every icon URL (for example /favicon.ico?v=20261103), redeploy, then check in a private window. Clearing site data also works for your own QA."}}, {"@type": "Question", "name": "What size should a favicon be?", "acceptedAnswer": {"@type": "Answer", "text": "Ship a favicon.ico containing 16, 32 and 48 px images, a 180 x 180 apple-touch-icon.png, and 192 and 512 px PNGs listed in a web manifest."}}, {"@type": "Question", "name": "Do I still need favicon.ico?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Browsers and many tools still request /favicon.ico automatically, and it's the most compatible format. Keep it alongside PNG or SVG icons."}}, {"@type": "Question", "name": "Why is my favicon not showing?", "acceptedAnswer": {"@type": "Answer", "text": "Usually it's the browser cache (test in a private window), a relative path (start the href with /), or a missing link tag on a site that isn't at the domain root."}}, {"@type": "Question", "name": "What favicon size does Google Search use?", "acceptedAnswer": {"@type": "Answer", "text": "Google asks for a square favicon at least 8×8 px and recommends larger than 48×48. Search formats: BMP, GIF, ICO, PNG, JPEG, PPM, TIFF (not SVG). Use a stable crawlable URL."}}]}</script>
 <style>
 :root{--bg:#0d0e14;--fg:#e9e9f2;--muted:#9a9ab0;--line:#262838;--acc:#8b7cff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 -apple-system,Segoe UI,Helvetica,Arial,sans-serif}
@@ -30,9 +30,9 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <table><tr><th>File</th><th>Size</th><th>Used by</th></tr>
 <tr><td><code>favicon.ico</code></td><td>16, 32 and 48 px inside one file</td><td>Browser tabs and bookmarks. Browsers still request <code>/favicon.ico</code> by default.</td></tr>
 <tr><td><code>apple-touch-icon.png</code></td><td>180 × 180</td><td>iPhone and iPad home screen. Use a solid background: iOS fills transparent areas with black.</td></tr>
-<tr><td><code>icon-192.png</code>, <code>icon-512.png</code></td><td>192 × 192, 512 × 512</td><td>Android home screen and "install app", listed in <code>site.webmanifest</code></td></tr>
+<tr><td><code>icon-192.png</code> / <code>android-chrome-192x192.png</code>, same for 512</td><td>192 × 192, 512 × 512</td><td>Android / PWA — any filename listed in <code>site.webmanifest</code></td></tr>
 <tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr>
-<tr><td><code>favicon for Google Search</code></td><td>48 × 48 or 96 × 96 (square, multiple of 48)</td><td>SERP snippet icon — can be the 48 px layer inside <code>favicon.ico</code> or a dedicated PNG at a crawlable URL</td></tr></table>
+<tr><td><code>favicon for Google Search</code></td><td>square ≥8×8; Google recommends larger than 48×48 (48 px ICO layer works)</td><td>SERP snippet icon — can be the 48 px layer inside <code>favicon.ico</code> or a dedicated PNG at a crawlable URL</td></tr></table>
 <h2>What you must ship vs optional (2026)</h2>
 <table><tr><th>Asset</th><th>Status</th><th>Skip if…</th></tr>
 <tr><td><code>favicon.ico</code> (16/32/48) + root <code>&lt;link rel="icon"&gt;</code></td><td><b>Required</b></td><td>Never — even SVG-only sites get <code>/favicon.ico</code> probes</td></tr>
@@ -41,7 +41,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <tr><td><code>icon.svg</code> + <code>type="image/svg+xml"</code></td><td>Optional</td><td>Nice for crisp tabs; keep ICO anyway for compatibility</td></tr>
 <tr><td><code>msapplication-TileImage</code></td><td>Optional</td><td>Legacy Windows Start tiles only — see <a href="#msapplication-tileimage">TileImage</a></td></tr></table>
 <h3>Paste-ready link tags</h3>
-<pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="32x32"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
 &lt;link rel="manifest" href="/site.webmanifest"&gt;</pre>
 <h2>Test your favicon before you ship</h2>
@@ -59,7 +59,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <h2 id="favicon-ico-root-requests">How to prevent <code>favicon.ico</code> requests?</h2>
 <p>You generally <b>should not</b> try to block them. Browsers, crawlers, and many tools still request <code>/favicon.ico</code> at the site root even when you declare PNG or SVG icons with <code>&lt;link rel="icon"&gt;</code>. Returning 404 only adds failed requests in DevTools.</p>
 <p>Practical fix: ship a real multi-size <code>favicon.ico</code> (16, 32, 48 px inside one file) at the root <b>and</b> declare modern icons explicitly:</p>
-<pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="32x32"&gt;
 &lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</pre>
 <p>Redirecting or returning 204 for <code>/favicon.ico</code> is possible but hurts bookmarks and search snippets. Size details: <a href="#favicon-16-vs-32">16×16 vs 32×32</a>.</p>
@@ -72,7 +72,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <h2 id="adding-favicon-static-html">Adding a favicon to a static HTML page</h2>
 <p>Paste these tags inside <code>&lt;head&gt;</code> on every HTML page (paths are from the site root):</p>
 <h3>The link tags</h3>
-<pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="32x32"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
 &lt;link rel="manifest" href="/site.webmanifest"&gt;</pre>
 <p>Optional: an SVG icon (<code>&lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;</code>) gives modern browsers a sharp icon at any size and can switch colours in dark mode.</p>
@@ -82,24 +82,24 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <ol>
 <li><b>Version the URL.</b> Change every icon <code>href</code> to include a query string you bump on each ship: <code>/favicon.ico?v=20261103</code>, same for PNG/SVG and the paths inside <code>site.webmanifest</code>.</li>
 <li><b>Redeploy, then private-window check.</b> Incognito / a fresh browser profile proves the new file is live without fighting your own cache.</li>
-<li><b>Your machine only:</b> DevTools → Application → Clear storage (include cached images), or delete the site's cookies/cache for that origin.</li>
+<li><b>Your machine only:</b> open <code>/favicon.ico?v=N</code> and hard-reload it, or test in a fresh browser profile. Clearing site data usually does not clear the tab icon.</li>
 </ol>
 <p>If the new file still never appears, it is usually path or tags — not cache:</p>
 <ol>
 <li><b>Path.</b> Start the href with <code>/</code>. Relative paths break on nested routes.</li>
 <li><b>No tag.</b> Without a link tag, browsers only look for <code>/favicon.ico</code> at the site root. Sub-folder sites need an explicit tag.</li>
-<li><b>Google Search.</b> Google wants a square icon whose size is a multiple of 48 px (48, 96, 144…), at a crawlable URL. SERP updates can take days to weeks.</li>
+<li><b>Google Search.</b> Google wants a square icon at least 8×8 px (recommends larger than 48×48) at a crawlable URL. SVG is not supported for Search. SERP updates can take days to weeks.</li>
 <li><b>iPhone shows a page screenshot.</b> Missing <code>apple-touch-icon</code> (180 × 180 PNG with a solid background).</li>
 </ol>
 <h2 id="firefox-bookmark-favicon">Firefox bookmark icon stuck on the old favicon</h2>
 <p>Firefox caches bookmark favicons in its profile database, not just the HTTP cache. Updating <code>favicon.ico</code> on the server often does <b>not</b> refresh icons already saved in the Bookmarks menu. For your own QA: remove the bookmark, clear the site’s cache (Settings → Privacy → Cookies and Site Data → Manage Data), then re-add the bookmark after you ship a versioned URL (<code>/favicon.ico?v=2</code>). You cannot force other users’ bookmarks to update — only bump the URL on your site so <b>new</b> bookmarks pick up the icon.</p>
 
 <h2 id="favicon-16-vs-32">Does a favicon have to be 16×16 or 32×32?</h2>
-<p><b>Neither alone.</b> Modern practice is a multi-resolution <code>favicon.ico</code> that embeds <b>16×16, 32×32 and 48×48</b> (and often 24×24). Browsers pick the nearest size for the UI chrome; Google Search prefers a square whose side is a multiple of 48&nbsp;px (so include 48 in the ICO or a separate PNG).</p>
+<p><b>Neither alone.</b> Modern practice is a multi-resolution <code>favicon.ico</code> that embeds <b>16×16, 32×32 and 48×48</b> (and often 24×24). Browsers pick the nearest size for the UI chrome; Google Search recommends larger than 48×48 (so include a 48 px layer in the ICO or a separate PNG).</p>
 <ul>
 <li><b>16×16</b> — classic tab favicon on non-retina.</li>
 <li><b>32×32</b> — crisp tabs on HiDPI; still the most common single size people export.</li>
-<li><b>48×48+</b> — bookmarks / Google SERP favicon guidelines.</li>
+<li><b>Square ≥8×8 (recommend &gt;48×48)</b> — Google Search; ICO or PNG (not SVG for Search).</li>
 <li><b>SVG</b> (<code>type="image/svg+xml"</code>) — optional; sharp at any size in Chromium/Firefox/Safari recent.</li>
 </ul>
 <p>There is no single “required” pixel size in the HTML spec. What breaks is shipping <i>only</i> a tiny 16×16 ICO on retina, or forgetting <code>apple-touch-icon</code> / manifest icons for home-screen installs.</p>
