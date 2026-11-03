@@ -27,6 +27,13 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <tr><td><code>apple-touch-icon.png</code></td><td>180 × 180</td><td>iPhone and iPad home screen. Use a solid background: iOS fills transparent areas with black.</td></tr>
 <tr><td><code>icon-192.png</code>, <code>icon-512.png</code></td><td>192 × 192, 512 × 512</td><td>Android home screen and "install app", listed in <code>site.webmanifest</code></td></tr>
 <tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr></table>
+<h2 id="favicon-ico-root-requests">How to prevent <code>favicon.ico</code> requests?</h2>
+<p>You generally <b>should not</b> try to block them. Browsers, crawlers, and many tools still request <code>/favicon.ico</code> at the site root even when you declare PNG or SVG icons with <code>&lt;link rel="icon"&gt;</code>. Returning 404 only adds failed requests in DevTools.</p>
+<p>Practical fix: ship a real multi-size <code>favicon.ico</code> (16, 32, 48 px inside one file) at the root <b>and</b> declare modern icons explicitly:</p>
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+&lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</pre>
+<p>Redirecting or returning 204 for <code>/favicon.ico</code> is possible but hurts bookmarks and search snippets. Size details: <a href="#favicon-16-vs-32">16×16 vs 32×32</a>.</p>
 <h2 id="adding-favicon-static-html">Adding a favicon to a static HTML page</h2>
 <p>Paste these tags inside <code>&lt;head&gt;</code> on every HTML page (paths are from the site root):</p>
 <h3>The link tags</h3>
