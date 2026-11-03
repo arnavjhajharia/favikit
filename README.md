@@ -4,6 +4,8 @@
 
 👉 **Live: https://arnavjhajharia.github.io/favikit/**
 
+**40-second demo video:** https://youtu.be/U-o71j-Z-lQ
+
 Most favicon generators upload your image to a server. Favikit does everything client-side with
 `<canvas>` — open your browser's network tab and watch: zero uploads.
 
