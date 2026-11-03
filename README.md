@@ -31,6 +31,10 @@ download. Hosted free on GitHub Pages.
 
 MIT licensed. Contributions welcome.
 
+## List this project
+
+One-line for awesome lists / free-for.dev: **Client-side favicon & PWA icon generator — real `.ico`, manifest + HTML snippet, nothing uploaded.** Live: https://arnavjhajharia.github.io/favikit/ · Repo: https://github.com/arnavjhajharia/favikit
+
 ## Guide
 
 [Favicon sizes in 2026: the only files you need](https://arnavjhajharia.github.io/favikit/favicon-sizes/) (plus 5 fixes when a favicon doesn't show).
