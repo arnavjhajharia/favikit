@@ -27,7 +27,9 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 <tr><td><code>apple-touch-icon.png</code></td><td>180 × 180</td><td>iPhone and iPad home screen. Use a solid background: iOS fills transparent areas with black.</td></tr>
 <tr><td><code>icon-192.png</code>, <code>icon-512.png</code></td><td>192 × 192, 512 × 512</td><td>Android home screen and "install app", listed in <code>site.webmanifest</code></td></tr>
 <tr><td><code>site.webmanifest</code></td><td>JSON</td><td>Name, colours and the icon list for Android/PWA</td></tr></table>
-<h2>The tags</h2>
+<h2 id="adding-favicon-static-html">Adding a favicon to a static HTML page</h2>
+<p>Paste these tags inside <code>&lt;head&gt;</code> on every HTML page (paths are from the site root):</p>
+<h3>The link tags</h3>
 <pre>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
 &lt;link rel="manifest" href="/site.webmanifest"&gt;</pre>
