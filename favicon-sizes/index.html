@@ -32,8 +32,9 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;
 &lt;link rel="manifest" href="/site.webmanifest"&gt;</pre>
 <p>Optional: an SVG icon (<code>&lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;</code>) gives modern browsers a sharp icon at any size and can switch colours in dark mode.</p>
-<h2>Favicon not showing? 5 fixes</h2>
-<ol><li><b>Cache.</b> Browsers cache favicons aggressively. Check in a private window before changing anything.</li>
+<h2 id="favicon-cache">Favicon not showing? 5 fixes (cache, paths, tags)</h2>
+<p>Stack Overflow's &quot;force favicon refresh&quot; threads get heavy traffic because this is almost always <b>cache</b>, not a broken deploy. Cache-bust with <code>?v=2</code> on every icon URL when you ship a new file.</p>
+<ol><li><b>Cache.</b> Browsers cache favicons aggressively. Hard refresh often fails; test in a private window or bump <code>href="/favicon.ico?v=YYYYMMDD"</code>.</li>
 <li><b>Path.</b> Start the href with <code>/</code>. Without it, the path is relative to each page, so it breaks on sub-pages.</li>
 <li><b>No tag.</b> Without a link tag, browsers only look for <code>/favicon.ico</code> at the site root. If your site lives in a sub-folder, add the tag.</li>
 <li><b>Google Search.</b> Google wants a square icon whose size is a multiple of 48 px (48, 96, 144...), at a URL it's allowed to crawl. Updates in search results can take days to weeks.</li>
