@@ -12,7 +12,7 @@ Most favicon generators upload your image to a server. Favikit does everything c
 ## What you get from one image
 - `favicon.ico` — a **real multi-resolution ICO** (16/32/48), not a renamed PNG
 - `favicon-16/32/48.png`
-- `apple-touch-icon.png` (180×180)
+- `apple-touch-icon.png` (180×180), always an opaque full square: iOS paints transparent pixels black and rounds the corners itself
 - `android-chrome-192x192.png` and `512x512.png`
 - `site.webmanifest` (valid PWA manifest)
 - A paste-ready `<head>` HTML snippet
