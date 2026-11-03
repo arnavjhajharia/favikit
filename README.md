@@ -30,3 +30,7 @@ Single static `index.html`. No build step. [JSZip](https://stuk.github.io/jszip/
 download. Hosted free on GitHub Pages.
 
 MIT licensed. Contributions welcome.
+
+## Guide
+
+[Favicon sizes in 2026: the only files you need](https://arnavjhajharia.github.io/favikit/favicon-sizes/) (plus 5 fixes when a favicon doesn't show).
