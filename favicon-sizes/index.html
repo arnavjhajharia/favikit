@@ -34,6 +34,12 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin
 &lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
 &lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</pre>
 <p>Redirecting or returning 204 for <code>/favicon.ico</code> is possible but hurts bookmarks and search snippets. Size details: <a href="#favicon-16-vs-32">16×16 vs 32×32</a>.</p>
+<h2 id="browser-tab-favicon">Which favicon sizes show in the browser tab?</h2>
+<p>The tab icon comes from your <code>&lt;link rel="icon"&gt;</code> tags and/or a root <code>/favicon.ico</code>. For a static site, this minimum set covers Chrome, Firefox, Safari, and Edge in 2026:</p>
+<pre>&lt;link rel="icon" href="/favicon.ico" sizes="32x32"&gt;
+&lt;link rel="icon" href="/favicon.svg" type="image/svg+xml"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</pre>
+<p>Put a multi-size <strong>favicon.ico</strong> (16×16 and 32×32) at the site root even when you use PNG/SVG — many clients still request <code>/favicon.ico</code> directly. If the tab shows an old icon, bump <code>?v=2</code> on each href and test in a private window (see <a href="#force-favicon-refresh">force refresh</a>).</p>
 <h2 id="adding-favicon-static-html">Adding a favicon to a static HTML page</h2>
 <p>Paste these tags inside <code>&lt;head&gt;</code> on every HTML page (paths are from the site root):</p>
 <h3>The link tags</h3>
