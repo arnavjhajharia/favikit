@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Favikit — Private favicon &amp; app-icon generator (nothing leaves your browser)</title>
+<meta name="description" content="Drop an image, get a complete favicon and app-icon set: real multi-size .ico, PNGs, Apple touch icon, Android icons, and a ready-to-paste HTML snippet and web manifest. 100% in your browser — nothing is uploaded." />
+<meta name="color-scheme" content="dark" />
+<meta property="og:title" content="Favikit — Private favicon & app-icon generator" />
+<meta property="og:description" content="Drop an image, get a complete favicon set. 100% client-side — nothing is uploaded." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%236c5ce7'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'%3EF%3C/text%3E%3C/svg%3E" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" referrerpolicy="no-referrer"></script>
+<style>
+  :root{
+    --bg:#0c0c10; --panel:#15151c; --panel2:#1d1d27; --line:#2a2a37;
+    --ink:#f4f4f8; --muted:#9a9aab; --accent:#6c5ce7; --accent2:#00d2b8; --danger:#ff6b6b;
+    --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#1b1430 0,var(--bg) 55%);color:var(--ink);min-height:100vh;line-height:1.5}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 70px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+  .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#9b7bff);display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow)}
+  .tagpill{font-size:12px;color:var(--accent2);border:1px solid #1f3b39;background:#0f1f1e;padding:4px 10px;border-radius:999px;font-weight:600}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-.03em;margin:26px 0 8px}
+  .sub{color:var(--muted);max-width:640px;margin:0 0 24px;font-size:15px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .drop{border:2px dashed #38384a;border-radius:var(--radius);padding:38px 20px;text-align:center;cursor:pointer;transition:.15s;background:var(--panel2)}
+  .drop.drag{border-color:var(--accent);background:#20203a}
+  .drop h3{margin:8px 0 4px;font-size:16px}
+  .drop p{margin:0;color:var(--muted);font-size:13px}
+  .drop .big{font-size:30px}
+  label.ctl{display:block;font-size:13px;color:var(--muted);margin:16px 0 6px;font-weight:600}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;padding:0}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{background:var(--panel2);color:var(--muted);border:0;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:600}
+  .seg button.on{background:var(--accent);color:#fff}
+  .btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:15px;cursor:pointer;transition:.15s}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),#8b73ff);color:#fff;box-shadow:var(--shadow)}
+  .btn.primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .btn.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .previews{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin-top:4px}
+  .pv{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .pv .cap{font-size:11px;color:var(--muted)}
+  .tabmock{display:flex;align-items:center;gap:8px;background:#23232f;border:1px solid var(--line);border-radius:9px 9px 0 0;padding:8px 12px;max-width:230px}
+  .tabmock img{width:16px;height:16px;border-radius:3px}
+  .tabmock span{font-size:12px;color:#cfcfda;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .iconbox{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+  .snippet{background:#0a0a0e;border:1px solid var(--line);border-radius:10px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#d7d7e6;white-space:pre;overflow:auto;max-height:230px}
+  .muted{color:var(--muted)}
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+  @media(max-width:820px){.features{grid-template-columns:1fr}}
+  .feat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .feat b{display:block;margin-bottom:4px}
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .hide{display:none}
+  .err{color:var(--danger);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><div class="logo">F</div> Favikit</div>
+    <div class="tagpill">🔒 100% in your browser — nothing is uploaded</div>
+  </header>
+
+  <h1>Turn one image into a complete favicon&nbsp;set.</h1>
+  <p class="sub">Drop a logo or photo and get a real multi-size <code>.ico</code>, every PNG size modern browsers want, Apple&nbsp;&amp; Android icons, a web&nbsp;manifest, and a paste-ready HTML snippet — generated entirely on your device. No sign-up, no upload, no tracking.</p>
+
+  <div class="grid">
+    <!-- LEFT: input + controls -->
+    <div class="card">
+      <div id="drop" class="drop">
+        <div class="big">🖼️</div>
+        <h3>Drop an image here</h3>
+        <p>or click to choose — PNG, JPG, SVG, WebP · square works best</p>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="hide" />
+      </div>
+      <div id="err" class="err hide"></div>
+
+      <div id="controls" class="hide">
+        <label class="ctl">Background</label>
+        <div class="row">
+          <div class="seg" id="bgseg">
+            <button data-bg="transparent" class="on">Transparent</button>
+            <button data-bg="color">Solid</button>
+          </div>
+          <input id="bgcolor" type="color" value="#6c5ce7" />
+        </div>
+
+        <label class="ctl">Padding — <span id="padval">10</span>%</label>
+        <input id="pad" type="range" min="0" max="35" value="10" />
+
+        <label class="ctl">Corner rounding — <span id="radval">0</span>%</label>
+        <input id="rad" type="range" min="0" max="50" value="0" />
+
+        <div class="row" style="margin-top:20px">
+          <button id="gen" class="btn primary" disabled>⬇ Download icon pack (.zip)</button>
+          <button id="reset" class="btn ghost">Start over</button>
+        </div>
+        <p class="muted" style="font-size:12px;margin-top:12px">The pack: <code>favicon.ico</code> (16/32/48), favicon PNGs, <code>apple-touch-icon</code> (180), Android 192 &amp; 512, <code>site.webmanifest</code>, and <code>snippet.html</code>.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: preview + snippet -->
+    <div class="card">
+      <label class="ctl" style="margin-top:0">Live preview</label>
+      <div class="previews">
+        <div class="pv">
+          <div class="tabmock"><img id="pvTab" alt="" /><span>Your site</span></div>
+          <div class="cap">Browser tab</div>
+        </div>
+        <div class="pv">
+          <div id="pvAppBox" class="iconbox" style="width:72px;height:72px"><img id="pvApp" alt="" style="width:100%;height:100%"/></div>
+          <div class="cap">App icon (180px)</div>
+        </div>
+        <div class="pv">
+          <div id="pvSmBox" class="iconbox" style="width:32px;height:32px"><img id="pvSm" alt="" style="width:100%;height:100%"/></div>
+          <div class="cap">32px</div>
+        </div>
+      </div>
+
+      <label class="ctl">Paste this into your <code>&lt;head&gt;</code></label>
+      <div id="snippet" class="snippet">Drop an image to generate your snippet…</div>
+      <div class="row" style="margin-top:12px">
+        <button id="copy" class="btn ghost" disabled>📋 Copy snippet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feat"><b>🔒 Truly private</b><span class="muted">Everything runs client-side with canvas. Your image never touches a server — check the network tab.</span></div>
+    <div class="feat"><b>🧩 A real .ico</b><span class="muted">Most tools hand you a renamed PNG. Favikit builds a proper multi-resolution ICO (16/32/48) that Windows and old browsers accept.</span></div>
+    <div class="feat"><b>⚡ Complete &amp; current</b><span class="muted">Apple touch icon, Android/PWA icons, a valid web manifest, and the exact HTML — nothing left to look up.</span></div>
+  </div>
+
+  <footer>
+    <div>Favikit · free &amp; open source · no account, no tracking.</div>
+    <div><a id="ghlink" href="#">View source on GitHub</a></div>
+  </footer>
+</div>
+
+<script>
+"use strict";
+(function(){
+  const $ = s => document.querySelector(s);
+  const drop=$('#drop'), file=$('#file'), controls=$('#controls'), err=$('#err');
+  const gen=$('#gen'), copyBtn=$('#copy'), resetBtn=$('#reset');
+  const padEl=$('#pad'), radEl=$('#rad'), bgColor=$('#bgcolor');
+  const padVal=$('#padval'), radVal=$('#radval');
+  let img=null, bgMode='transparent';
+
+  const SIZES=[16,32,48,180,192,512];
+
+  function showErr(m){ err.textContent=m; err.classList.remove('hide'); }
+  function clearErr(){ err.classList.add('hide'); }
+
+  // Draw the source image into a size*size canvas with padding, rounding, bg.
+  function render(size){
+    const c=document.createElement('canvas'); c.width=size; c.height=size;
+    const x=c.getContext('2d');
+    const r=(radEl.value/50)*(size/2); // 0..50% -> radius
+    if(r>0){ roundRect(x,0,0,size,size,r); x.clip(); }
+    if(bgMode==='color'){ x.fillStyle=bgColor.value; x.fillRect(0,0,size,size); }
+    const pad=(padEl.value/100)*size;
+    const box=size-pad*2;
+    // contain the image inside box, centered
+    const ar=img.width/img.height;
+    let w=box,h=box;
+    if(ar>1){ h=box/ar; } else { w=box*ar; }
+    x.imageSmoothingQuality='high';
+    x.drawImage(img, (size-w)/2, (size-h)/2, w, h);
+    return c;
+  }
+  function roundRect(x,ax,ay,w,h,r){
+    x.beginPath();
+    x.moveTo(ax+r,ay);
+    x.arcTo(ax+w,ay,ax+w,ay+h,r);
+    x.arcTo(ax+w,ay+h,ax,ay+h,r);
+    x.arcTo(ax,ay+h,ax,ay,r);
+    x.arcTo(ax,ay,ax+w,ay,r);
+    x.closePath();
+  }
+  function dataURL(size){ return render(size).toDataURL('image/png'); }
+  function blobOf(canvas){ return new Promise(res=>canvas.toBlob(res,'image/png')); }
+
+  function updatePreview(){
+    if(!img) return;
+    $('#pvTab').src=dataURL(32);
+    $('#pvApp').src=dataURL(180);
+    $('#pvSm').src=dataURL(32);
+    const manifestName='site.webmanifest';
+    $('#snippet').textContent =
+`<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/${manifestName}">`;
+  }
+
+  // Build a real .ico that embeds PNG images (valid for 16/32/48).
+  async function buildIco(sizes){
+    const pngs=[];
+    for(const s of sizes){
+      const blob=await blobOf(render(s));
+      pngs.push(new Uint8Array(await blob.arrayBuffer()));
+    }
+    const count=sizes.length;
+    const header=6, dirEntry=16;
+    let offset=header+dirEntry*count;
+    const body=[];
+    const dir=new Uint8Array(header+dirEntry*count);
+    const dv=new DataView(dir.buffer);
+    dv.setUint16(0,0,true); dv.setUint16(2,1,true); dv.setUint16(4,count,true);
+    for(let i=0;i<count;i++){
+      const s=sizes[i], png=pngs[i];
+      const e=header+i*dirEntry;
+      dir[e]=s>=256?0:s; dir[e+1]=s>=256?0:s; dir[e+2]=0; dir[e+3]=0;
+      dv.setUint16(e+4,1,true); dv.setUint16(e+6,32,true);
+      dv.setUint32(e+8,png.length,true); dv.setUint32(e+12,offset,true);
+      offset+=png.length; body.push(png);
+    }
+    const total=offset;
+    const out=new Uint8Array(total); out.set(dir,0);
+    let p=header+dirEntry*count;
+    for(const b of body){ out.set(b,p); p+=b.length; }
+    return new Blob([out],{type:'image/x-icon'});
+  }
+
+  async function generate(){
+    gen.disabled=true; gen.textContent='Building…';
+    try{
+      const zip=new JSZip();
+      const map={16:'favicon-16x16.png',32:'favicon-32x32.png',48:'favicon-48x48.png',180:'apple-touch-icon.png',192:'android-chrome-192x192.png',512:'android-chrome-512x512.png'};
+      for(const s of SIZES){ zip.file(map[s], await blobOf(render(s))); }
+      zip.file('favicon.ico', await buildIco([16,32,48]));
+      zip.file('site.webmanifest', JSON.stringify({
+        name:"", short_name:"",
+        icons:[
+          {src:"/android-chrome-192x192.png",sizes:"192x192",type:"image/png"},
+          {src:"/android-chrome-512x512.png",sizes:"512x512",type:"image/png"}
+        ],
+        theme_color: bgMode==='color'?bgColor.value:"#ffffff",
+        background_color: bgMode==='color'?bgColor.value:"#ffffff",
+        display:"standalone"
+      },null,2));
+      zip.file('snippet.html', $('#snippet').textContent+'\n');
+      zip.file('README.txt',
+`Favikit icon pack
+-----------------
+Drop these files in your site root and paste snippet.html into your <head>.
+Fill in "name" and "short_name" in site.webmanifest.
+Generated locally in your browser at favikit — nothing was uploaded.`);
+      const blob=await zip.generateAsync({type:'blob'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='favikit-icons.zip'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    }catch(e){ showErr('Could not build the pack: '+e.message); }
+    gen.disabled=false; gen.textContent='⬇ Download icon pack (.zip)';
+  }
+
+  function loadFile(f){
+    clearErr();
+    if(!f || !f.type.startsWith('image/')){ showErr('Please choose an image file.'); return; }
+    const url=URL.createObjectURL(f);
+    const im=new Image();
+    im.onload=()=>{ img=im; controls.classList.remove('hide'); drop.classList.add('hide'); gen.disabled=false; copyBtn.disabled=false; updatePreview(); };
+    im.onerror=()=>{ showErr('That image could not be read. Try a PNG or JPG.'); };
+    im.src=url;
+  }
+
+  drop.addEventListener('click',()=>file.click());
+  file.addEventListener('change',e=>loadFile(e.target.files[0]));
+  ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag');}));
+  drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+
+  padEl.addEventListener('input',()=>{padVal.textContent=padEl.value;updatePreview();});
+  radEl.addEventListener('input',()=>{radVal.textContent=radEl.value;updatePreview();});
+  bgColor.addEventListener('input',()=>{ if(bgMode==='color') updatePreview(); });
+  $('#bgseg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+    [...e.currentTarget.children].forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    bgMode=b.dataset.bg; updatePreview(); });
+  gen.addEventListener('click',generate);
+  resetBtn.addEventListener('click',()=>{ img=null; controls.classList.add('hide'); drop.classList.remove('hide'); file.value=''; clearErr(); });
+  copyBtn.addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText($('#snippet').textContent); copyBtn.textContent='✓ Copied'; setTimeout(()=>copyBtn.textContent='📋 Copy snippet',1500);}catch{ showErr('Copy failed — select the snippet manually.'); } });
+})();
+</script>
+</body>
+</html>
