@@ -181,12 +181,14 @@
   function clearErr(){ err.classList.add('hide'); }
 
   // Draw the source image into a size*size canvas with padding, rounding, bg.
-  function render(size){
+  // apple=true: iOS fills transparent pixels with black and applies its own corner mask,
+  // so the Apple touch icon is always an opaque full square (chosen colour, else white).
+  function render(size, apple){
     const c=document.createElement('canvas'); c.width=size; c.height=size;
     const x=c.getContext('2d');
-    const r=(radEl.value/50)*(size/2); // 0..50% -> radius
+    const r=apple?0:(radEl.value/50)*(size/2); // 0..50% -> radius
     if(r>0){ roundRect(x,0,0,size,size,r); x.clip(); }
-    if(bgMode==='color'){ x.fillStyle=bgColor.value; x.fillRect(0,0,size,size); }
+    if(bgMode==='color'||apple){ x.fillStyle=bgMode==='color'?bgColor.value:'#ffffff'; x.fillRect(0,0,size,size); }
     const pad=(padEl.value/100)*size;
     const box=size-pad*2;
     // contain the image inside box, centered
@@ -206,7 +208,7 @@
     x.arcTo(ax,ay,ax+w,ay,r);
     x.closePath();
   }
-  function dataURL(size){ return render(size).toDataURL('image/png'); }
+  function dataURL(size){ return render(size, size===180).toDataURL('image/png'); }
   function blobOf(canvas){ return new Promise(res=>canvas.toBlob(res,'image/png')); }
 
   function updatePreview(){
@@ -257,7 +259,7 @@
     try{
       const zip=new JSZip();
       const map={16:'favicon-16x16.png',32:'favicon-32x32.png',48:'favicon-48x48.png',180:'apple-touch-icon.png',192:'android-chrome-192x192.png',512:'android-chrome-512x512.png'};
-      for(const s of SIZES){ zip.file(map[s], await blobOf(render(s))); }
+      for(const s of SIZES){ zip.file(map[s], await blobOf(render(s, s===180))); }
       zip.file('favicon.ico', await buildIco([16,32,48]));
       zip.file('site.webmanifest', JSON.stringify({
         name:"", short_name:"",
